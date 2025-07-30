@@ -1,0 +1,21 @@
+# YOLOv5 and computer vision
+torch>=1.13.0
+opencv-python
+numpy
+
+# CLIP and Transformers
+transformers
+sentencepiece  # Required by some transformer models
+scipy
+
+# Firebase support
+firebase-admin
+
+# Image processing
+Pillow
+
+# Environment variable handling
+python-dotenv
+
+# (Optional) if you're using matplotlib for debugging
+matplotlib

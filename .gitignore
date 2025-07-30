@@ -4,9 +4,7 @@ myenv/
 # Ignore Firebase service account credentials
 firebase_key.json 
 
-# Ignore YOLOv5 model weights
- *.pt
-
+ 
 # Ignore Python  cache
 __pycache__/
 *.pyc

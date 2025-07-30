@@ -1,10 +1,15 @@
+import tempfile
 import cv2
 import time
+import os
 import firebase_admin
 from firebase_admin import credentials, db
+from reason_analyzer import analyze_congestion_reason
 from tracker import SimpleTracker
 from ultralytics import YOLO
-
+from PIL import Image
+ 
+ 
 # Firebase config
 cred = credentials.Certificate("firebase_key.json")
 firebase_admin.initialize_app(cred, {
@@ -12,8 +17,13 @@ firebase_admin.initialize_app(cred, {
 })
 
 # Load YOLOv5
-model = YOLO("yolov5l.pt")  # use 'yolov5n.pt' or yolov8 if preferred
+ 
+model = YOLO("yolov5nu.pt")  # use 'yolov5n.pt' or yolov8 if preferred
+ 
 
+ 
+
+ 
 # Tracker
 tracker = SimpleTracker(distance_threshold=40, stuck_seconds=5)
 
@@ -27,7 +37,7 @@ while True:
         break
 
     frame = cv2.resize(frame, (640, 480))
-
+   
     # Detect vehicles
     results = model.predict(frame, verbose=False)[0]
     detections = []
@@ -44,8 +54,32 @@ while True:
     stuck = tracker.get_stuck_vehicles()
 
     if stuck:
+        
+        # Capture current frame
+        frame_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+        image_pil = Image.fromarray(frame_rgb) 
+
+        try:            
+             reason = analyze_congestion_reason(image_pil)        
+        except Exception as e:            
+             reason = "Unknown (AI error)"           
+             print("Reason analyzer error:", e)
+
         status = "Congestion"
+    
         color = (0, 0, 255)
+          
+        # Firebase log only during congestion
+        try:
+            db.reference("traffic_data").push({
+                'timestamp': time.time(),
+                'status': status,
+                'reason': reason,
+                'vehicle_count': len(detections)
+            })
+        except Exception as e:
+            print("Firebase error:", e)
+
     else:
         status = "Normal"
         color = (0, 255, 0)
@@ -57,16 +91,6 @@ while True:
 
     cv2.putText(frame, f"Status: {status}", (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 0.8, color, 2)
     cv2.putText(frame, f"Vehicles: {len(detections)}", (10, 60), cv2.FONT_HERSHEY_SIMPLEX, 0.8, (255,255,255), 2)
-
-    # Firebase log
-    try:
-        db.reference("traffic_data").push({
-            'timestamp': time.time(),
-            'cause': status,
-            'vehicle_count': len(detections)
-        })
-    except Exception as e:
-        print("Firebase error:", e)
 
     # Display
     cv2.imshow("Traffic Monitor", frame)
