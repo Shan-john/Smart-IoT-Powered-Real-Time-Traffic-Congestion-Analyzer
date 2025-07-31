@@ -4,6 +4,7 @@ import time
 import os
 import firebase_admin
 from firebase_admin import credentials, db
+from sympy import true
 from reason_analyzer import analyze_congestion_reason
 from tracker import SimpleTracker
 from ultralytics import YOLO
@@ -28,8 +29,8 @@ model = YOLO("yolov5nu.pt")  # use 'yolov5n.pt' or yolov8 if preferred
 tracker = SimpleTracker(distance_threshold=40, stuck_seconds=5)
 
 # Video source
-VIDEO_PATH = "straffic.mp4"  # or use 0 for webcam
-cap = cv2.VideoCapture(0)
+VIDEO_PATH = "video.mp4"  # or use 0 for webcam
+cap = cv2.VideoCapture(VIDEO_PATH)
 
 while True:
     ret, frame = cap.read()
@@ -60,7 +61,8 @@ while True:
         image_pil = Image.fromarray(frame_rgb) 
 
         try:            
-             reason = analyze_congestion_reason(image_pil)        
+             reason = analyze_congestion_reason(image_pil)  
+                         
         except Exception as e:            
              reason = "Unknown (AI error)"           
              print("Reason analyzer error:", e)
@@ -75,12 +77,18 @@ while True:
                 'timestamp': time.time(),
                 'status': status,
                 'reason': reason,
+                 
                 'vehicle_count': len(detections)
             })
+            db.reference("isCongestion").set(True)
         except Exception as e:
             print("Firebase error:", e)
 
     else:
+        try: 
+            db.reference("isCongestion").set(False)
+        except:
+            pass
         status = "Normal"
         color = (0, 255, 0)
 
