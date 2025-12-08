@@ -1,0 +1,13 @@
+# Ignore node modules
+node_modules/
+
+# Optional: ignore VS Code settings
+.vscode/
+
+# Optional: ignore Visual Studio folder
+.vs/
+
+# Optional: ignore logs
+*.log
+
+

@@ -7,11 +7,8 @@ import NotFound from "@/pages/not-found";
 import DashboardPage from "@/pages/Dashboard";
 import { Provider } from "react-redux";
 import { store } from "./store";
-import doc from 'firebase/firestore';
-import db from "../src/firebase-config";
 
 function Router() {
-
   return (
     <Switch>
       <Route path="/" component={DashboardPage} />
@@ -21,7 +18,6 @@ function Router() {
 }
 
 function App() {
-   
   return (
     <Provider store={store}>
       <QueryClientProvider client={queryClient}>
