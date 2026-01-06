@@ -1,8 +1,6 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
-import { getFirestore } from "firebase/firestore";
-// TODO: Add SDKs for Firebase products that you want to use
-// https://firebase.google.com/docs/web/setup#available-libraries
+import { getDatabase, ref, onValue } from "firebase/database";
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
@@ -17,6 +15,48 @@ const firebaseConfig = {
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
+const database = getDatabase(app);
 
-export default db;
+
+/**
+ * Subscribe to processed_data updates from Firebase
+ * Reads pre-processed data from backend (no client-side processing needed)
+ */
+export const subscribeToProcessedData = (callback) => {
+  // Listen directly to processed_data (pre-processed by backend)
+  const processedDataRef = ref(database, 'processed_data');
+  console.log('[Firebase] Setting up listener for processed_data...');
+  
+  return onValue(processedDataRef, (snapshot) => {
+    console.log('[Firebase] Snapshot received:', snapshot.exists());
+    const data = snapshot.val();
+    console.log('[Firebase] Data from processed_data:', data);
+    
+    if (data) {
+      // Data is already processed by backend, pass directly
+      callback({
+        vehicleCount: data.vehicleCount || 0,
+        time: data.time || "N/A",
+        congestion: data.congestion || [],
+        report: data.report || [],
+        graph: data.graph || [],
+        daily_summary: data.daily_summary || [],
+        detailed_history: data.detailed_history || []
+      });
+    } else {
+      console.log('[Firebase] No data found at processed_data path');
+      // Return empty structure
+      callback({
+        vehicleCount: 0,
+        time: "N/A",
+        congestion: [],
+        report: [],
+        graph: []
+      });
+    }
+  }, (error) => {
+    console.error('[Firebase] Error reading data:', error);
+  });
+};
+
+export default database;

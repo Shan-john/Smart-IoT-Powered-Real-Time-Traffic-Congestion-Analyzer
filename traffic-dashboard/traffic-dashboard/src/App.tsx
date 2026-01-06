@@ -7,8 +7,8 @@ import NotFound from "@/pages/not-found";
 import DashboardPage from "@/pages/Dashboard";
 import { Provider } from "react-redux";
 import { store } from "./store";
-import doc from 'firebase/firestore';
-import db from "../src/firebase-config";
+import { useFirebaseData } from "./hooks/useFirebaseData";
+
 
 function Router() {
 
@@ -20,14 +20,22 @@ function Router() {
   );
 }
 
+// Component to initialize Firebase subscription
+function FirebaseDataProvider({ children }: { children: React.ReactNode }) {
+  useFirebaseData();
+  return <>{children}</>;
+}
+
 function App() {
-   
+
   return (
     <Provider store={store}>
       <QueryClientProvider client={queryClient}>
         <TooltipProvider>
-          <Toaster />
-          <Router />
+          <FirebaseDataProvider>
+            <Toaster />
+            <Router />
+          </FirebaseDataProvider>
         </TooltipProvider>
       </QueryClientProvider>
     </Provider>

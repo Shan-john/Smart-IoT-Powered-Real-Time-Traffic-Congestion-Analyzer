@@ -1,8 +1,7 @@
 # Ignore virtual environment
-myenv/
+venv/
 
 # Ignore Firebase service account credentials
-firebase_key.json 
 
  
 # Ignore Python  cache
@@ -15,4 +14,4 @@ __pycache__/
 .vscode/
 
 # Ignore environment variables
-.env
+
