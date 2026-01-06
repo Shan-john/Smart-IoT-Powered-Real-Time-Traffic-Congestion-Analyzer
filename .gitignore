@@ -2,7 +2,7 @@
 venv/
 
 # Ignore Firebase service account credentials
-
+firebase_key.json
  
 # Ignore Python  cache
 __pycache__/
