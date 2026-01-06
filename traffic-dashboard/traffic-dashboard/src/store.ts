@@ -1,6 +1,63 @@
 import { configureStore, createSlice, PayloadAction } from '@reduxjs/toolkit';
 
-// Define the initial state based on the provided JSON
+// Define types for better type safety
+interface CongestionItem {
+  name: string;
+  percentage: number;
+  count?: number;
+}
+
+interface ReportItem {
+  reason: string;
+  suggestions: string[];
+}
+
+interface GraphItem {
+  timestamp: string;
+  percentage: number;
+  reason: string;
+  confidence?: number;
+  average_speed?: number;
+  stuck_ratio?: number;
+  status?: string;
+}
+
+interface DailySummaryItem {
+  date: string;
+  totalEvents: number;
+  peakVehicleCount: number;
+  avgConfidence?: number;
+  avgSpeed?: number;
+  avgStuckRatio?: number;
+}
+
+interface DetailedHistoryItem {
+  date: string;
+  time: string;
+  vehicleCount: number;
+  reason: string;
+  congestion_status: string;
+  timestamp: number;
+  confidence?: number;
+  average_speed?: number;
+  stuck_ratio?: number;
+}
+
+interface StatusBreakdownItem {
+  name: string;
+  count: number;
+  percentage: number;
+}
+
+interface Stats {
+  avg_confidence: number;
+  avg_speed: number;
+  avg_stuck_ratio: number;
+  total_events: number;
+  status_breakdown: StatusBreakdownItem[];
+}
+
+// Define the initial state
 const initialState = {
   vehicleCount: 0,
   time: "N/A",
@@ -11,11 +68,19 @@ const initialState = {
   loading: false,
   error: null as string | null,
   // Data
-  congestion: [] as { name: string; percentage: number }[],
-  report: [] as { reason: string; suggestions: string[] }[],
-  graph: [] as { timestamp: string; percentage: number; reason: string }[],
-  daily_summary: [] as { date: string; totalEvents: number; peakVehicleCount: number }[],
-  detailed_history: [] as { date: string; time: string; vehicleCount: number; reason: string; congestion_status: string; timestamp: number }[],
+  congestion: [] as CongestionItem[],
+  report: [] as ReportItem[],
+  graph: [] as GraphItem[],
+  daily_summary: [] as DailySummaryItem[],
+  detailed_history: [] as DetailedHistoryItem[],
+  // New stats field
+  stats: {
+    avg_confidence: 0,
+    avg_speed: 0,
+    avg_stuck_ratio: 0,
+    total_events: 0,
+    status_breakdown: [] as StatusBreakdownItem[]
+  } as Stats,
 };
 
 const trafficSlice = createSlice({
@@ -43,6 +108,13 @@ const trafficSlice = createSlice({
       state.graph = data.graph || [];
       state.daily_summary = data.daily_summary || [];
       state.detailed_history = data.detailed_history || [];
+      state.stats = data.stats || {
+        avg_confidence: 0,
+        avg_speed: 0,
+        avg_stuck_ratio: 0,
+        total_events: 0,
+        status_breakdown: []
+      };
       state.loading = false;
       state.error = null;
     },
@@ -66,4 +138,3 @@ export const store = configureStore({
 
 export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;
-

@@ -21,6 +21,7 @@ const database = getDatabase(app);
 /**
  * Subscribe to processed_data updates from Firebase
  * Reads pre-processed data from backend (no client-side processing needed)
+ * Now includes enhanced fields: stats, confidence, speed, stuck_ratio
  */
 export const subscribeToProcessedData = (callback) => {
   // Listen directly to processed_data (pre-processed by backend)
@@ -41,17 +42,34 @@ export const subscribeToProcessedData = (callback) => {
         report: data.report || [],
         graph: data.graph || [],
         daily_summary: data.daily_summary || [],
-        detailed_history: data.detailed_history || []
+        detailed_history: data.detailed_history || [],
+        // New stats field with enhanced metrics
+        stats: data.stats || {
+          avg_confidence: 0,
+          avg_speed: 0,
+          avg_stuck_ratio: 0,
+          total_events: 0,
+          status_breakdown: []
+        }
       });
     } else {
       console.log('[Firebase] No data found at processed_data path');
-      // Return empty structure
+      // Return empty structure with stats
       callback({
         vehicleCount: 0,
         time: "N/A",
         congestion: [],
         report: [],
-        graph: []
+        graph: [],
+        daily_summary: [],
+        detailed_history: [],
+        stats: {
+          avg_confidence: 0,
+          avg_speed: 0,
+          avg_stuck_ratio: 0,
+          total_events: 0,
+          status_breakdown: []
+        }
       });
     }
   }, (error) => {
