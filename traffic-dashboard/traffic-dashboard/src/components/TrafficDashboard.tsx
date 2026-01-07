@@ -2,9 +2,10 @@ import React, { useState, useMemo } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState, AppDispatch, setView, toggleMobileMenu, closeMobileMenu } from '../store';
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, LineChart, Line, XAxis, YAxis, CartesianGrid, Legend, BarChart, Bar } from 'recharts';
-import { LayoutDashboard, Activity, FileText, Settings, Menu, X, MapPin, Clock, Car, Loader2, AlertCircle, RefreshCw, ChevronRight, ChevronLeft, ArrowLeft, Filter, Calendar, Search } from 'lucide-react';
+import { LayoutDashboard, Activity, FileText, Settings, Menu, X, MapPin, Clock, Car, Loader2, AlertCircle, RefreshCw, ChevronRight, ChevronLeft, ArrowLeft, Filter, Calendar, Search, Shield } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useToast } from '../hooks/use-toast';
+import { AdminPanel } from './AdminPanel';
 
 // --- Components ---
 
@@ -35,7 +36,7 @@ const Sidebar = () => {
         </div>
 
         {/* Toggle-like Menu */}
-        <div className="bg-white/10 rounded-2xl p-1.5 mb-auto flex flex-col gap-1">
+        <div className="bg-white/10 rounded-2xl p-1.5 mb-6 flex flex-col gap-1">
           <div
             className={`rounded-xl px-4 py-2 text-xs font-bold shadow-sm text-center cursor-pointer transition-all duration-200 flex items-center justify-center gap-2
               ${currentView === 'live' ? 'bg-white text-slate-800 scale-105' : 'text-white/70 hover:bg-white/5 hover:text-white'}`}
@@ -51,6 +52,15 @@ const Sidebar = () => {
           >
             recent summary
           </div>
+        </div>
+
+        {/* Admin Link */}
+        <div
+          className={`mb-auto flex items-center text-white/90 cursor-pointer hover:text-white transition-colors ${currentView === 'admin' ? 'text-white font-bold' : ''}`}
+          onClick={() => dispatch(setView('admin'))}
+        >
+          <Shield className="w-5 h-5 mr-3" />
+          <span className="text-sm">Admin Panel</span>
         </div>
 
         {/* Map Section at Bottom — FIXED */}
@@ -136,6 +146,13 @@ const MobileMenu = () => {
               >
                 <FileText className="w-5 h-5 mr-3" />
                 <span className="font-bold">Recent Summary</span>
+              </div>
+              <div
+                className={`p-3 rounded-xl flex items-center cursor-pointer ${currentView === 'admin' ? 'bg-white text-slate-800' : 'text-white hover:bg-white/10'}`}
+                onClick={() => handleNav('admin')}
+              >
+                <Shield className="w-5 h-5 mr-3" />
+                <span className="font-bold">Admin Panel</span>
               </div>
             </nav>
 
@@ -985,6 +1002,10 @@ export const TrafficDashboard = () => {
                   Return to Dashboard
                 </button>
               </motion.div>
+            )}
+
+            {currentView === 'admin' && (
+              <AdminPanel />
             )}
           </AnimatePresence>
         </div>

@@ -77,4 +77,42 @@ export const subscribeToProcessedData = (callback) => {
   });
 };
 
+/**
+ * Delete all data at the specified Firebase path
+ * @param {string} path - The path to delete (e.g., 'traffic_data' or 'processed_data')
+ */
+export const deleteFirebaseData = async (path) => {
+  const { set } = await import('firebase/database');
+  const dataRef = ref(database, path);
+  console.log(`[Firebase] Deleting data at path: ${path}`);
+  await set(dataRef, null);
+  console.log(`[Firebase] Successfully deleted data at path: ${path}`);
+};
+
+/**
+ * Upload/set data at the specified Firebase path (overwrites existing data)
+ * @param {string} path - The path to upload to
+ * @param {object} data - The data to upload
+ */
+export const uploadFirebaseData = async (path, data) => {
+  const { set } = await import('firebase/database');
+  const dataRef = ref(database, path);
+  console.log(`[Firebase] Uploading data to path: ${path}`, data);
+  await set(dataRef, data);
+  console.log(`[Firebase] Successfully uploaded data to path: ${path}`);
+};
+
+/**
+ * Merge/update data at the specified Firebase path (preserves existing data)
+ * @param {string} path - The path to update
+ * @param {object} data - The data to merge
+ */
+export const uploadMergeFirebaseData = async (path, data) => {
+  const { update } = await import('firebase/database');
+  const dataRef = ref(database, path);
+  console.log(`[Firebase] Merging data at path: ${path}`, data);
+  await update(dataRef, data);
+  console.log(`[Firebase] Successfully merged data at path: ${path}`);
+};
+
 export default database;

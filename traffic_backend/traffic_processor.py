@@ -71,7 +71,7 @@ class TrafficProcessor:
         self.db_ref.child("traffic_data").listen(on_data_change)
     
     def generate_suggestions(self, reason):
-        """Generate AI-powered suggestions based on congestion reason"""
+        """Generate AI-powered suggestions based on congestion reason to rectify the congestion """
         try:
             from suggestion_generator import get_suggestions_for_reason
             return get_suggestions_for_reason(reason)

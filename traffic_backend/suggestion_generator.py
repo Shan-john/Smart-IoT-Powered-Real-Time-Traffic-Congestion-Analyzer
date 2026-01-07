@@ -5,181 +5,209 @@ from typing import List, Dict
 import re
 
 # Comprehensive suggestion database organized by category keywords
+# These are targeted remediation actions to REDUCE/ELIMINATE each specific congestion cause
 SUGGESTION_DATABASE: Dict[str, List[str]] = {
     # Traffic Flow Issues
     "heavy traffic": [
-        "Use real-time navigation apps to find less congested routes",
-        "Consider traveling during off-peak hours (before 7 AM or after 8 PM)",
-        "Carpool to reduce the number of vehicles on the road"
+        "Widen road or add extra lane to increase vehicle capacity",
+        "Implement smart traffic signals to reduce waiting time at intersections",
+        "Promote public transport usage to reduce number of private vehicles"
     ],
     "bumper to bumper": [
-        "Maintain safe following distance to prevent chain-reaction accidents",
-        "Use cruise control where possible to maintain steady speed",
-        "Avoid sudden lane changes which worsen congestion"
+        "Build flyover or underpass to separate crossing traffic",
+        "Introduce staggered office timings to distribute vehicle load",
+        "Add alternative bypass route to divert through-traffic"
     ],
     "slow moving": [
-        "Be patient and avoid aggressive driving behaviors",
-        "Use the time to listen to audiobooks or podcasts",
-        "Check if there's an incident ahead using traffic apps"
+        "Remove bottleneck causing the slowdown (parked vehicles, narrow section)",
+        "Synchronize traffic signals to create continuous green wave flow",
+        "Ban slow-moving heavy vehicles during peak hours"
+    ],
+    "high density": [
+        "Create one-way traffic system to improve flow direction",
+        "Restrict private vehicles and encourage public transport",
+        "Develop parallel roads to distribute traffic density"
     ],
     "stop and go": [
-        "Anticipate braking to reduce fuel consumption",
-        "Keep engine in good condition for frequent stopping",
-        "Consider hybrid or electric vehicles for better efficiency"
+        "Install adaptive signal control to reduce red light waiting",
+        "Remove unnecessary traffic signals causing frequent stops",
+        "Create dedicated lanes for through-traffic without stops"
     ],
     "rush hour": [
-        "Adjust work schedule if flexible working is available",
-        "Use public transportation during peak hours",
-        "Plan meetings to avoid peak travel times"
+        "Enforce staggered work timings for offices in the area",
+        "Increase bus/metro frequency to reduce private vehicle usage",
+        "Implement work-from-home policies for nearby businesses"
     ],
     "vehicles stopped": [
-        "Turn off engine if stopped for more than 2 minutes",
-        "Stay alert for emergency vehicles that may need passage",
-        "Use parking brake on inclines to reduce fatigue"
+        "Deploy tow trucks to immediately remove stopped vehicles",
+        "Create emergency breakdown bays to clear main carriageway",
+        "Install vehicle detection sensors for instant incident alerts"
+    ],
+    "intermittent": [
+        "Identify and fix the cause of irregular traffic flow",
+        "Install real-time monitoring to detect flow interruptions",
+        "Deploy traffic marshals during peak hours for smooth flow"
     ],
     
     # Parking Issues
     "parking": [
-        "Report illegal parking to traffic authorities",
-        "Use designated parking areas only",
-        "Look for parking apps to find available spots"
+        "Remove illegally parked vehicles blocking traffic flow",
+        "Build dedicated parking lot nearby to free up road space",
+        "Enforce strict no-parking with heavy fines and towing"
     ],
     "double parking": [
-        "Report to traffic enforcement immediately",
-        "Take photos for evidence if blocking your vehicle",
-        "Use horn briefly to alert the driver if present"
+        "Deploy tow trucks to immediately clear double-parked vehicles",
+        "Install CCTV with auto-detection for instant penalty issuance",
+        "Create loading zones to prevent parking on main road"
     ],
     "delivery": [
-        "Be patient with essential delivery services",
-        "Advocate for designated loading zones in your area",
-        "Shop during non-delivery peak hours"
+        "Restrict delivery vehicles to off-peak hours only",
+        "Create designated delivery bays away from traffic lanes",
+        "Switch to night delivery policy for commercial areas"
+    ],
+    "illegal parking": [
+        "Tow away all illegally parked vehicles immediately",
+        "Install bollards to physically prevent parking in no-parking zones",
+        "Increase fine amount significantly to deter violations"
     ],
     
     # Road Conditions
     "road blocked": [
-        "Use GPS to find alternative routes immediately",
-        "Report the blockage to local traffic authorities",
-        "Share information with other drivers via apps"
+        "Clear the blockage immediately with emergency response team",
+        "Set up diversion route to redirect traffic around blockage",
+        "Remove the cause of blockage (debris, broken vehicle, obstruction)"
     ],
     "construction": [
-        "Follow temporary signs and speed limits carefully",
-        "Be extra cautious around construction workers",
-        "Check road work schedules before planning trips"
+        "Move construction work to night hours when traffic is low",
+        "Fast-track completion with strict deadline enforcement",
+        "Provide well-marked alternate route during construction"
     ],
     "pothole": [
-        "Report potholes to local maintenance department",
-        "Reduce speed when approaching damaged road sections",
-        "Avoid sudden swerving which can cause accidents"
+        "Fill and repair the pothole within 24 hours",
+        "Resurface the entire road section to prevent future damage",
+        "Install proper drainage to prevent road surface deterioration"
+    ],
+    "road damage": [
+        "Repair damaged road section immediately on priority basis",
+        "Use quality materials to ensure long-lasting repair",
+        "Address root cause (drainage, heavy vehicles) to prevent recurrence"
+    ],
+    "narrow": [
+        "Widen the narrow section or acquire adjacent land for expansion",
+        "Convert to one-way traffic to maximize narrow road capacity",
+        "Restrict large vehicles from using narrow road"
     ],
     
     # Traffic Signals
     "signal": [
-        "Report malfunctioning signals to traffic department",
-        "Treat broken signals as 4-way stop intersections",
-        "Exercise extra caution and make eye contact with other drivers"
+        "Fix or replace malfunctioning traffic signal immediately",
+        "Optimize signal timing to reduce unnecessary waiting",
+        "Install backup power to prevent signal failures"
     ],
     "traffic light": [
-        "Wait patiently for signal changes",
-        "Avoid running amber lights which cause accidents",
-        "Report timing issues to improve flow"
+        "Adjust signal timing to match actual traffic flow patterns",
+        "Implement intelligent signal that adapts to real-time traffic",
+        "Synchronize signals for green wave on main corridor"
+    ],
+    "junction": [
+        "Redesign junction for smoother traffic flow",
+        "Install roundabout to eliminate signal-related congestion",
+        "Add dedicated turn lanes to separate turning traffic"
     ],
     
     # Accidents & Incidents
     "accident": [
-        "Give space to emergency responders",
-        "Don't slow down excessively to observe (rubbernecking)",
-        "If you witnessed it, provide information to authorities"
+        "Clear accident site quickly and move vehicles to roadside",
+        "Install safety barriers at this spot to prevent future accidents",
+        "Deploy incident response team for faster clearance"
     ],
     "collision": [
-        "Call emergency services if injuries are suspected",
-        "Move to a safe location if possible and involved",
-        "Document the scene for insurance purposes"
+        "Install speed cameras to reduce speeding at this location",
+        "Add lane markings and signage to prevent lane confusion",
+        "Install rumble strips to alert drivers of dangerous zone"
     ],
     "breakdown": [
-        "Turn on hazard lights if you break down",
-        "Move to the shoulder if safe to do so",
-        "Call roadside assistance immediately"
-    ],
-    "fire": [
-        "Evacuate the area immediately if safe",
-        "Call emergency services (fire department)",
-        "Do not attempt to fight vehicle fires yourself"
+        "Arrange quick towing service to clear broken-down vehicle",
+        "Create breakdown lane for vehicles to pull over safely",
+        "Set up roadside assistance patrol for fast response"
     ],
     
     # Weather Conditions
     "rain": [
-        "Reduce speed by 20-30% in wet conditions",
-        "Increase following distance to 4-5 seconds",
-        "Turn on headlights for visibility"
+        "Improve drainage system to prevent water logging on road",
+        "Apply anti-skid treatment on road surface for wet conditions",
+        "Install proper road markings visible in rain"
     ],
     "fog": [
-        "Use low-beam headlights, not high-beams",
-        "Reduce speed significantly",
-        "Use road markings as a guide"
-    ],
-    "snow": [
-        "Fit winter tires or chains if required",
-        "Accelerate and brake gently",
-        "Keep emergency supplies in vehicle"
-    ],
-    "ice": [
-        "Avoid sudden movements (steering, braking)",
-        "Stay home if conditions are severe",
-        "Allow extra time for all journeys"
+        "Install fog lights and reflectors along the road",
+        "Deploy warning signs for drivers during low visibility",
+        "Enforce reduced speed limit during foggy conditions"
     ],
     "flood": [
-        "Never drive through standing water",
-        "Turn around if road is flooded",
-        "Know your vehicle's water fording depth"
+        "Build elevated road section in flood-prone area",
+        "Install flood barrier and proper drainage systems",
+        "Create alternate route that bypasses flood-prone zone"
+    ],
+    "waterlogging": [
+        "Clean and unclog drainage system immediately",
+        "Install additional storm water drains",
+        "Raise road level in waterlogging-prone sections"
     ],
     
     # Driver Behavior
-    "braking": [
-        "Maintain steady speed to reduce need for braking",
-        "Keep eyes ahead to anticipate slowdowns",
-        "Avoid tailgating to prevent sudden braking"
-    ],
     "speeding": [
-        "Follow posted speed limits at all times",
-        "Remember speed fines can be expensive",
-        "High speed increases accident severity"
+        "Install speed cameras with automatic fine system",
+        "Add speed breakers or chicanes to force speed reduction",
+        "Increase police patrolling in speeding-prone areas"
     ],
     "aggressive": [
-        "Stay calm and don't engage with aggressive drivers",
-        "Give way to aggressive drivers for safety",
-        "Report dangerous driving to authorities"
+        "Increase visible traffic police presence",
+        "Install surveillance cameras to catch traffic violations",
+        "Launch strict enforcement drive against aggressive driving"
+    ],
+    "wrong way": [
+        "Install clear one-way signage with no-entry boards",
+        "Add physical barriers to prevent wrong-way entry",
+        "Install wrong-way detection system with instant alerts"
     ],
     
     # Special Events
     "event": [
-        "Plan alternative routes before event days",
-        "Use public transportation to event venues",
-        "Leave early or wait until crowds disperse"
+        "Create separate traffic management plan for event",
+        "Arrange shuttle services to reduce private vehicles",
+        "Deploy extra traffic police for event-day management"
     ],
-    "parade": [
-        "Check event schedules before traveling",
-        "Use designated pedestrian crossing points",
-        "Be patient and enjoy the festivities"
+    "school": [
+        "Create separate drop-off zone away from main road",
+        "Stagger school timings to reduce traffic peak",
+        "Install pedestrian crossing with traffic signal"
     ],
-    "stadium": [
-        "Arrive early to avoid post-event rush",
-        "Book parking in advance if available",
-        "Consider rideshare or public transit"
+    "market": [
+        "Relocate market to area with better access and parking",
+        "Pedestrianize market area and divert vehicles around it",
+        "Schedule market hours to avoid peak traffic times"
     ],
     
-    # Default/Generic
+    # Infrastructure Issues
+    "bottleneck": [
+        "Widen the bottleneck section to match road capacity",
+        "Build bypass road to divert traffic around bottleneck",
+        "Remove the physical constraint causing the bottleneck"
+    ],
+    
+    # Default/Generic - for monitoring
     "normal": [
-        "Continue driving safely",
-        "Stay alert for changing conditions",
-        "Follow all traffic rules"
+        "No immediate action required - traffic flowing normally",
+        "Continue monitoring for any emerging issues",
+        "Maintain road infrastructure in good condition"
     ]
 }
 
 # Fallback suggestions for unmatched reasons
 DEFAULT_SUGGESTIONS = [
-    "Monitor the traffic situation and adjust route if needed",
-    "Stay patient and avoid aggressive driving behaviors",
-    "Use real-time navigation for alternative route suggestions"
+    "Investigate root cause of congestion through on-site assessment",
+    "Deploy traffic monitoring to identify specific problem areas",
+    "Coordinate with engineering team to design appropriate solution"
 ]
 
 
