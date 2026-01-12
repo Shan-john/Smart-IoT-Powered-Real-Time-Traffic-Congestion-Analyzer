@@ -1,53 +1,734 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 
+/* Import cute Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800;900&family=Quicksand:wght@400;500;600;700&display=swap');
+
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
-  --font-sans: 'Plus Jakarta Sans', 'Inter', sans-serif;
+  /* Kawaii Typography */
+  --font-sans: 'Nunito', 'Quicksand', sans-serif;
 
-  --radius-sm: 0.5rem;
-  --radius-md: 0.75rem;
-  --radius-lg: 1rem;
-  
-  --color-background: hsl(0 0% 96%); /* Light Gray Background #f5f5f5 */
-  --color-foreground: hsl(222 47% 11%); /* Dark Navy Text */
-  
-  --color-card: hsl(0 0% 100%);
-  --color-card-foreground: hsl(222 47% 11%);
-  
-  --color-primary: hsl(222 47% 11%);
-  --color-primary-foreground: hsl(210 40% 98%);
-  
-  --color-secondary: hsl(210 40% 96.1%);
-  --color-secondary-foreground: hsl(222 47% 11.2%);
-  
-  --color-muted: hsl(210 40% 96.1%);
-  --color-muted-foreground: hsl(215.4 16.3% 46.9%);
-  
-  --color-accent: hsl(210 40% 96.1%);
-  --color-accent-foreground: hsl(222 47% 11.2%);
-  
-  --color-destructive: hsl(0 84.2% 60.2%);
-  --color-destructive-foreground: hsl(210 40% 98%);
-  
-  --color-border: hsl(214.3 31.8% 91.4%);
-  --color-input: hsl(214.3 31.8% 91.4%);
-  --color-ring: hsl(222.2 84% 4.9%);
+  --radius-sm: 0.75rem;
+  --radius-md: 1rem;
+  --radius-lg: 1.5rem;
 
-  /* Custom Dashboard Colors */
-  --color-stat-green: hsl(142 45% 65%); /* Soft Green */
-  --color-stat-red: hsl(0 70% 65%);   /* Soft Red */
-  --color-chart-blue: hsl(217 91% 60%);
-  --color-chart-orange: hsl(24 95% 53%);
-  --color-chart-yellow: hsl(45 93% 47%);
+  /* ✨ Kawaii Color Palette ✨ */
+  --color-background: hsl(330 30% 97%);
+  /* Soft pink-tinted cream */
+  --color-foreground: hsl(280 25% 20%);
+  /* Deep purple text */
+
+  --color-card: hsl(0 0% 100% / 0.8);
+  --color-card-foreground: hsl(280 25% 20%);
+
+  --color-primary: hsl(330 70% 65%);
+  /* Cherry blossom pink */
+  --color-primary-foreground: hsl(0 0% 100%);
+
+  --color-secondary: hsl(270 50% 90%);
+  /* Soft lavender */
+  --color-secondary-foreground: hsl(280 25% 20%);
+
+  --color-muted: hsl(330 20% 94%);
+  --color-muted-foreground: hsl(280 15% 45%);
+
+  --color-accent: hsl(330 60% 90%);
+  --color-accent-foreground: hsl(280 25% 20%);
+
+  --color-destructive: hsl(350 70% 65%);
+  --color-destructive-foreground: hsl(0 0% 100%);
+
+  --color-border: hsl(330 30% 88%);
+  --color-input: hsl(330 30% 92%);
+  --color-ring: hsl(330 70% 65%);
+
+  /* 🌸 Kawaii Accent Colors */
+  --color-kawaii-pink: hsl(330 80% 80%);
+  /* Cherry blossom */
+  --color-kawaii-lavender: hsl(270 60% 85%);
+  /* Soft lavender */
+  --color-kawaii-mint: hsl(160 50% 80%);
+  /* Mint green */
+  --color-kawaii-peach: hsl(15 90% 85%);
+  /* Peachy coral */
+  --color-kawaii-cream: hsl(40 60% 95%);
+  /* Warm cream */
+  --color-kawaii-sky: hsl(200 70% 85%);
+  /* Sky blue */
+  --color-kawaii-lilac: hsl(280 60% 85%);
+  /* Lilac purple */
+  --color-kawaii-rose: hsl(350 70% 80%);
+  /* Rose pink */
+
+  /* Dashboard Stat Colors - Pastel */
+  --color-stat-green: hsl(160 50% 75%);
+  /* Soft mint */
+  --color-stat-red: hsl(350 70% 80%);
+  /* Soft rose */
+  --color-chart-blue: hsl(200 70% 75%);
+  /* Soft sky */
+  --color-chart-orange: hsl(30 80% 80%);
+  /* Soft peach */
+  --color-chart-yellow: hsl(45 80% 80%);
+  /* Soft butter */
 }
 
 @layer base {
   * {
     @apply border-border;
   }
+
   body {
-    @apply font-sans antialiased bg-background text-foreground;
+    @apply font-sans antialiased;
+    background: linear-gradient(135deg,
+        hsl(330 40% 96%) 0%,
+        hsl(280 40% 96%) 50%,
+        hsl(200 40% 96%) 100%);
+    min-height: 100vh;
   }
+}
+
+/* Kawaii Glassmorphism Utilities */
+@layer utilities {
+  .glass-card {
+    backdrop-filter: blur(20px);
+    background: rgba(255, 255, 255, 0.7);
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    box-shadow: 0 8px 32px rgba(219, 166, 193, 0.15);
+  }
+
+  .kawaii-shadow {
+    box-shadow: 0 4px 20px rgba(219, 166, 193, 0.25),
+      0 0 40px rgba(219, 166, 193, 0.1);
+  }
+
+  .kawaii-glow {
+    box-shadow: 0 0 20px rgba(244, 171, 186, 0.4),
+      0 0 40px rgba(244, 171, 186, 0.2);
+  }
+
+  /* 🌸 Cute Pastel Background Gradients */
+  .kawaii-bg-pink {
+    background: linear-gradient(135deg,
+        hsl(330 60% 97%) 0%,
+        hsl(340 50% 95%) 50%,
+        hsl(320 55% 96%) 100%);
+  }
+
+  .kawaii-bg-lavender {
+    background: linear-gradient(135deg,
+        hsl(270 50% 97%) 0%,
+        hsl(280 45% 95%) 50%,
+        hsl(260 50% 96%) 100%);
+  }
+
+  .kawaii-bg-mint {
+    background: linear-gradient(135deg,
+        hsl(160 40% 96%) 0%,
+        hsl(170 45% 94%) 50%,
+        hsl(150 40% 95%) 100%);
+  }
+
+  .kawaii-bg-cream {
+    background: linear-gradient(135deg,
+        hsl(40 50% 97%) 0%,
+        hsl(35 55% 95%) 50%,
+        hsl(45 50% 96%) 100%);
+  }
+
+  .kawaii-bg-sky {
+    background: linear-gradient(135deg,
+        hsl(200 60% 97%) 0%,
+        hsl(210 55% 95%) 50%,
+        hsl(195 50% 96%) 100%);
+  }
+
+  /* 🌈 Cute rainbow gradient card */
+  .kawaii-rainbow-bg {
+    background: linear-gradient(135deg,
+        hsl(330 60% 96%) 0%,
+        hsl(280 50% 96%) 25%,
+        hsl(200 50% 96%) 50%,
+        hsl(160 45% 96%) 75%,
+        hsl(330 60% 96%) 100%);
+  }
+
+  .gradient-pink-lavender {
+    background: linear-gradient(135deg,
+        hsl(330 70% 80%) 0%,
+        hsl(280 60% 80%) 100%);
+  }
+
+  .gradient-mint-sky {
+    background: linear-gradient(135deg,
+        hsl(160 50% 80%) 0%,
+        hsl(200 70% 85%) 100%);
+  }
+
+  .gradient-peach-pink {
+    background: linear-gradient(135deg,
+        hsl(15 90% 85%) 0%,
+        hsl(330 80% 80%) 100%);
+  }
+
+  /* Sparkle animation for kawaii elements */
+  @keyframes sparkle {
+
+    0%,
+    100% {
+      opacity: 1;
+      transform: scale(1);
+    }
+
+    50% {
+      opacity: 0.7;
+      transform: scale(1.1);
+    }
+  }
+
+  .animate-sparkle {
+    animation: sparkle 2s ease-in-out infinite;
+  }
+
+  /* Floating animation */
+  @keyframes float {
+
+    0%,
+    100% {
+      transform: translateY(0px);
+    }
+
+    50% {
+      transform: translateY(-5px);
+    }
+  }
+
+  .animate-float {
+    animation: float 3s ease-in-out infinite;
+  }
+}
+
+/* Custom scrollbar for kawaii theme */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: hsl(330 30% 95%);
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, hsl(330 60% 80%) 0%, hsl(280 50% 80%) 100%);
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, hsl(330 70% 75%) 0%, hsl(280 60% 75%) 100%);
+}
+
+/* 🌸 NEW: More Kawaii Animations */
+@keyframes bounce-cute {
+
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  25% {
+    transform: translateY(-8px);
+  }
+
+  50% {
+    transform: translateY(0);
+  }
+
+  75% {
+    transform: translateY(-4px);
+  }
+}
+
+.animate-bounce-cute {
+  animation: bounce-cute 2s ease-in-out infinite;
+}
+
+/* 💖 Heart beat animation */
+@keyframes heartbeat {
+
+  0%,
+  100% {
+    transform: scale(1);
+  }
+
+  15% {
+    transform: scale(1.15);
+  }
+
+  30% {
+    transform: scale(1);
+  }
+
+  45% {
+    transform: scale(1.1);
+  }
+}
+
+.animate-heartbeat {
+  animation: heartbeat 1.2s ease-in-out infinite;
+}
+
+/* ✨ Wiggle animation */
+@keyframes wiggle {
+
+  0%,
+  100% {
+    transform: rotate(0deg);
+  }
+
+  25% {
+    transform: rotate(-8deg);
+  }
+
+  75% {
+    transform: rotate(8deg);
+  }
+}
+
+.animate-wiggle {
+  animation: wiggle 0.8s ease-in-out infinite;
+}
+
+/* 🌈 Rainbow shimmer animation */
+@keyframes rainbow-shimmer {
+  0% {
+    background-position: 0% 50%;
+  }
+
+  50% {
+    background-position: 100% 50%;
+  }
+
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.animate-rainbow {
+  background: linear-gradient(90deg,
+      hsl(330 70% 85%),
+      hsl(280 60% 85%),
+      hsl(200 70% 85%),
+      hsl(160 50% 85%),
+      hsl(330 70% 85%));
+  background-size: 300% 100%;
+  animation: rainbow-shimmer 4s ease infinite;
+}
+
+/* 💫 Twinkle animation */
+@keyframes twinkle {
+
+  0%,
+  100% {
+    opacity: 0.3;
+    transform: scale(0.8);
+  }
+
+  50% {
+    opacity: 1;
+    transform: scale(1.2);
+  }
+}
+
+.animate-twinkle {
+  animation: twinkle 2s ease-in-out infinite;
+}
+
+/* 🎀 Gentle sway animation */
+@keyframes sway {
+
+  0%,
+  100% {
+    transform: rotate(-3deg);
+  }
+
+  50% {
+    transform: rotate(3deg);
+  }
+}
+
+.animate-sway {
+  animation: sway 3s ease-in-out infinite;
+}
+
+/* 🌟 Pop animation for interactive elements */
+@keyframes pop {
+  0% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(1.05);
+  }
+
+  100% {
+    transform: scale(1);
+  }
+}
+
+.hover\:animate-pop:hover {
+  animation: pop 0.3s ease-out;
+}
+
+/* ☁️ Cloud float animation */
+@keyframes cloud-float {
+
+  0%,
+  100% {
+    transform: translateX(0) translateY(0);
+  }
+
+  25% {
+    transform: translateX(5px) translateY(-3px);
+  }
+
+  50% {
+    transform: translateX(0) translateY(-5px);
+  }
+
+  75% {
+    transform: translateX(-5px) translateY(-2px);
+  }
+}
+
+.animate-cloud {
+  animation: cloud-float 6s ease-in-out infinite;
+}
+
+/* 🌸 Petal fall animation */
+@keyframes petal-fall {
+  0% {
+    transform: translateY(-20px) rotate(0deg);
+    opacity: 0;
+  }
+
+  10% {
+    opacity: 1;
+  }
+
+  90% {
+    opacity: 1;
+  }
+
+  100% {
+    transform: translateY(100vh) rotate(720deg);
+    opacity: 0;
+  }
+}
+
+.animate-petal {
+  animation: petal-fall 8s linear infinite;
+}
+
+/* Cute button hover effect */
+.kawaii-btn {
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.kawaii-btn:hover {
+  transform: translateY(-3px) scale(1.02);
+  box-shadow: 0 10px 30px rgba(244, 114, 182, 0.4);
+}
+
+.kawaii-btn:active {
+  transform: translateY(0) scale(0.98);
+}
+
+/* Cute card hover lift */
+.kawaii-card-hover {
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.kawaii-card-hover:hover {
+  transform: translateY(-8px) rotate(0.5deg);
+  box-shadow: 0 20px 40px rgba(219, 166, 193, 0.3);
+}
+
+/* Kawaii border with gradient */
+.kawaii-border {
+  border: 2px solid transparent;
+  background: linear-gradient(white, white),
+    linear-gradient(135deg, hsl(330 70% 80%), hsl(280 60% 80%));
+  background-origin: border-box;
+  background-clip: padding-box, border-box;
+}
+
+/* Cute badge styles */
+.kawaii-badge {
+  background: linear-gradient(135deg, hsl(330 80% 85%) 0%, hsl(280 70% 85%) 100%);
+  color: hsl(280 40% 30%);
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  font-weight: 700;
+  font-size: 0.75rem;
+  box-shadow: 0 2px 8px rgba(219, 166, 193, 0.3);
+}
+
+/* 🚗 Cute Organic Blob Shapes */
+.blob-shape-1 {
+  border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%;
+}
+
+.blob-shape-2 {
+  border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;
+}
+
+.blob-shape-3 {
+  border-radius: 70% 30% 30% 70% / 60% 40% 60% 40%;
+}
+
+.blob-shape-4 {
+  border-radius: 40% 60% 60% 40% / 70% 30% 70% 30%;
+}
+
+/* ☁️ Cloud-like container shape */
+.cloud-container {
+  border-radius: 50% 50% 45% 55% / 40% 40% 60% 60%;
+  position: relative;
+}
+
+.cloud-container::before {
+  content: "";
+  position: absolute;
+  width: 40%;
+  height: 50%;
+  background: inherit;
+  border-radius: 50%;
+  top: -20%;
+  left: 20%;
+  z-index: -1;
+}
+
+/* 🌊 Wavy bottom container */
+.wavy-container {
+  position: relative;
+  border-radius: 2rem 2rem 0 0;
+}
+
+.wavy-container::after {
+  content: "";
+  position: absolute;
+  bottom: -15px;
+  left: 0;
+  right: 0;
+  height: 30px;
+  background: inherit;
+  clip-path: path('M0,15 Q25,0 50,15 T100,15 T150,15 T200,15 T250,15 T300,15 T350,15 T400,15 V30 H0 Z');
+  background-size: 50px 30px;
+}
+
+/* 🎈 Balloon/bubble shape */
+.bubble-shape {
+  border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+  position: relative;
+}
+
+.bubble-shape::after {
+  content: "";
+  position: absolute;
+  bottom: -8px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-left: 8px solid transparent;
+  border-right: 8px solid transparent;
+  border-top: 10px solid currentColor;
+}
+
+/* 🍀 Leaf/petal container shape */
+.petal-shape {
+  border-radius: 70% 0 70% 0;
+}
+
+.petal-shape-alt {
+  border-radius: 0 70% 0 70%;
+}
+
+/* ⭐ Star-ish rounded container */
+.star-container {
+  border-radius: 50% 20% 50% 20% / 20% 50% 20% 50%;
+}
+
+/* 🚗 Anime Car Animation */
+@keyframes car-drive {
+  0% {
+    transform: translateX(-100%) rotate(-2deg);
+  }
+
+  50% {
+    transform: translateX(0) rotate(0deg);
+  }
+
+  100% {
+    transform: translateX(100%) rotate(2deg);
+  }
+}
+
+.animate-car-drive {
+  animation: car-drive 8s ease-in-out infinite;
+}
+
+/* 🚦 Traffic Light Pulse */
+@keyframes traffic-light {
+
+  0%,
+  45% {
+    background-color: #86efac;
+    box-shadow: 0 0 20px #86efac;
+  }
+
+  /* green */
+  50%,
+  70% {
+    background-color: #fcd34d;
+    box-shadow: 0 0 20px #fcd34d;
+  }
+
+  /* yellow */
+  75%,
+  100% {
+    background-color: #fda4af;
+    box-shadow: 0 0 20px #fda4af;
+  }
+
+  /* red */
+}
+
+.traffic-light-indicator {
+  animation: traffic-light 6s ease-in-out infinite;
+}
+
+/* 🚙 Vehicle-themed decorative card */
+.vehicle-card {
+  position: relative;
+  overflow: visible;
+}
+
+.vehicle-card::before {
+  content: "🚗";
+  position: absolute;
+  top: -15px;
+  left: 20px;
+  font-size: 1.5rem;
+  animation: bounce-cute 2s ease-in-out infinite;
+}
+
+.vehicle-card::after {
+  content: "💨";
+  position: absolute;
+  top: -10px;
+  left: 55px;
+  font-size: 0.8rem;
+  opacity: 0.6;
+  animation: float 2s ease-in-out infinite;
+}
+
+/* 🏎️ Racing stripe accent */
+.racing-stripe {
+  position: relative;
+}
+
+.racing-stripe::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  height: 4px;
+  background: linear-gradient(90deg,
+      transparent 0%,
+      hsl(330 80% 75%) 20%,
+      hsl(280 70% 75%) 50%,
+      hsl(330 80% 75%) 80%,
+      transparent 100%);
+  border-radius: 0 0 10px 10px;
+}
+
+/* 🛣️ Road-themed container */
+.road-container {
+  position: relative;
+  border-left: 4px dashed hsl(45 80% 70%);
+  border-right: 4px dashed hsl(45 80% 70%);
+}
+
+/* 🎌 Cute flag decoration */
+.flag-decoration::before {
+  content: "🎌";
+  position: absolute;
+  top: -20px;
+  right: 15px;
+  font-size: 1.2rem;
+  animation: sway 2s ease-in-out infinite;
+}
+
+/* 🚙 Squish animation for cute containers */
+@keyframes squish {
+
+  0%,
+  100% {
+    transform: scale(1, 1);
+  }
+
+  25% {
+    transform: scale(1.02, 0.98);
+  }
+
+  75% {
+    transform: scale(0.98, 1.02);
+  }
+}
+
+.animate-squish:hover {
+  animation: squish 0.5s ease-in-out;
+}
+
+/* 🌈 Organic morphing shape */
+@keyframes morph {
+  0% {
+    border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%;
+  }
+
+  25% {
+    border-radius: 30% 60% 70% 40% / 50% 60% 30% 60%;
+  }
+
+  50% {
+    border-radius: 40% 60% 60% 40% / 70% 30% 70% 30%;
+  }
+
+  75% {
+    border-radius: 60% 40% 30% 70% / 40% 60% 30% 70%;
+  }
+
+  100% {
+    border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%;
+  }
+}
+
+.animate-morph {
+  animation: morph 8s ease-in-out infinite;
+}
+
+/* 🚦 Cute traffic cone decoration */
+.traffic-cone::after {
+  content: "🚧";
+  position: absolute;
+  bottom: -10px;
+  right: 10px;
+  font-size: 1rem;
+  animation: wiggle 2s ease-in-out infinite;
 }
