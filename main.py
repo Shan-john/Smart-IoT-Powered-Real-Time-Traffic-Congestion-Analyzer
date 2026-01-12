@@ -30,7 +30,7 @@ congestion_analyzer = CongestionAnalyzer(use_clip=False)
 
 # Video source
 VIDEO_PATH = "video.mp4"
-cap = cv2.VideoCapture(0)  # 0 for webcam, VIDEO_PATH for file
+cap = cv2.VideoCapture(VIDEO_PATH)  # 0 for webcam, VIDEO_PATH for file
 
 # Global State for Threading
 last_analysis_time = 0

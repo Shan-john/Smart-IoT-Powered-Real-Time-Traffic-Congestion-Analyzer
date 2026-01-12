@@ -252,11 +252,6 @@ def get_suggestions_for_reason(reason: str) -> List[str]:
     return DEFAULT_SUGGESTIONS
 
 
-def get_all_suggestion_categories() -> List[str]:
-    """Get all available suggestion categories."""
-    return list(SUGGESTION_DATABASE.keys())
-
-
 # Example usage
 if __name__ == "__main__":
     test_reasons = [
