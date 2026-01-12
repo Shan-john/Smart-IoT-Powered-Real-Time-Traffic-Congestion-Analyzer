@@ -1,6 +1,6 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
-import { getDatabase, ref, onValue, set, update, Database, Unsubscribe } from "firebase/database";
+import { getDatabase, ref, onValue, set, update, push, get, child, Database, Unsubscribe } from "firebase/database";
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
@@ -138,6 +138,107 @@ export const uploadMergeFirebaseData = async (path: string, data: Record<string,
     console.log(`[Firebase] Merging data at path: ${path}`, data);
     await update(dataRef, data);
     console.log(`[Firebase] Successfully merged data at path: ${path}`);
+};
+
+// ============== AI Chat Firebase Functions ==============
+
+interface AiRequest {
+    query: string;
+    status: 'pending' | 'processing' | 'completed' | 'error';
+    timestamp: number;
+    created_at: string;
+}
+
+interface AiResponse {
+    request_id: string;
+    query: string;
+    html: string;
+    status: 'completed' | 'error';
+    error?: string;
+    timestamp: number;
+    created_at: string;
+}
+
+/**
+ * Push a new AI request to Firebase for backend processing
+ * @returns The request ID
+ */
+export const pushAiRequest = async (query: string): Promise<string> => {
+    const requestsRef = ref(database, 'ai_requests');
+    const newRequest: AiRequest = {
+        query,
+        status: 'pending',
+        timestamp: Date.now() / 1000,
+        created_at: new Date().toISOString()
+    };
+
+    console.log('[Firebase AI] Pushing request:', query);
+    const newRef = await push(requestsRef, newRequest);
+    const requestId = newRef.key!;
+    console.log('[Firebase AI] Request ID:', requestId);
+    return requestId;
+};
+
+/**
+ * Subscribe to latest AI report updates (real-time listener)
+ */
+export const subscribeToAiResponse = (
+    requestId: string,
+    callback: (response: AiResponse | null) => void
+): Unsubscribe => {
+    // Listen to latest_ai_report for real-time updates
+    const latestRef = ref(database, 'latest_ai_report');
+    console.log('[Firebase AI] Subscribing to latest_ai_report');
+
+    return onValue(latestRef, (snapshot) => {
+        const data = snapshot.val();
+        // Trigger callback for any completed report
+        if (data && data.status === 'completed' && data.html) {
+            console.log('[Firebase AI] Report received:', data.request_id);
+            callback(data);
+        }
+    });
+};
+
+/**
+ * Get latest AI report from Firebase
+ */
+export const getLatestAiReport = async (): Promise<AiResponse | null> => {
+    const latestRef = ref(database, 'latest_ai_report');
+    const snapshot = await get(latestRef);
+    return snapshot.val();
+};
+
+/**
+ * Get AI report history (last 20 reports)
+ */
+export const getAiReportHistory = async (): Promise<Array<{ report_id: string; query: string; timestamp: number }>> => {
+    const responsesRef = ref(database, 'ai_responses');
+    const snapshot = await get(responsesRef);
+    const data = snapshot.val();
+
+    if (!data) return [];
+
+    const reports = Object.entries(data).map(([id, report]: [string, any]) => ({
+        report_id: id,
+        query: report.query || '',
+        timestamp: report.timestamp || 0,
+        date: report.created_at ? new Date(report.created_at).toLocaleDateString() : '',
+        time: report.created_at ? new Date(report.created_at).toLocaleTimeString() : ''
+    }));
+
+    // Sort by timestamp descending
+    reports.sort((a, b) => b.timestamp - a.timestamp);
+    return reports.slice(0, 20);
+};
+
+/**
+ * Get a specific AI report by ID
+ */
+export const getAiReport = async (reportId: string): Promise<AiResponse | null> => {
+    const reportRef = ref(database, `ai_responses/${reportId}`);
+    const snapshot = await get(reportRef);
+    return snapshot.val();
 };
 
 export default database;

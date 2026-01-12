@@ -21,7 +21,7 @@ model = YOLO("yolov5nu.pt")
 # Enhanced Tracker with speed/flow metrics
 tracker = EnhancedTracker(
     distance_threshold=50,      # Max pixels between frames to match
-    stuck_speed_threshold=5.0,  # Below 5 px/s = stuck
+    stuck_speed_threshold=5.0,  # Below 5cd tra  px/s = stuck
     stuck_seconds=3.0           # 3 seconds stuck = congestion
 )
 

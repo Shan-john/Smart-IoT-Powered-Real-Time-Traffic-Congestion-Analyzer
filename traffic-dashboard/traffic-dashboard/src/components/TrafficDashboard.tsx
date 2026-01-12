@@ -168,6 +168,231 @@ const AnimeMascot = () => {
   );
 };
 
+// --- 🤖 AI Chat View Component ---
+
+// Import Firebase AI functions
+import {
+  pushAiRequest,
+  subscribeToAiResponse,
+  getLatestAiReport
+} from '../firebase-config';
+
+
+const AIChatView = () => {
+  const dispatch = useDispatch();
+  const [query, setQuery] = useState('');
+  const [htmlContent, setHtmlContent] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  // Fetch only the latest report from Firebase on mount
+  React.useEffect(() => {
+    const fetchLatest = async () => {
+      try {
+        const latestReport = await getLatestAiReport();
+        if (latestReport && latestReport.html) {
+          setHtmlContent(latestReport.html);
+        }
+      } catch (err) {
+        console.error('Failed to fetch latest report:', err);
+      }
+    };
+    fetchLatest();
+  }, []);
+
+  const handleSendQuery = async () => {
+    if (!query.trim()) return;
+
+    setLoading(true);
+    setError(null);
+    const queryText = query.trim();
+    setQuery('');
+
+    try {
+      // Push request to Firebase - backend will pick it up via listener
+      const requestId = await pushAiRequest(queryText);
+      console.log('[Chat] Request pushed:', requestId);
+
+      let resolved = false;
+
+      // Subscribe to response from Firebase - wait for ANY completed report
+      const unsubscribe = subscribeToAiResponse(requestId, (response) => {
+        if (resolved) return;
+        console.log('[Chat] Subscription received:', response?.status);
+        if (response && response.html && response.status === 'completed') {
+          resolved = true;
+          console.log('[Chat] Got result via subscription!');
+          setHtmlContent(response.html);
+          setLoading(false);
+          unsubscribe();
+        } else if (response && response.status === 'error') {
+          resolved = true;
+          setError(response.error || 'Failed to generate report');
+          setLoading(false);
+          unsubscribe();
+        }
+      });
+
+      // Keep polling every 2 seconds until result arrives
+      const pollInterval = setInterval(async () => {
+        if (resolved) {
+          clearInterval(pollInterval);
+          return;
+        }
+        try {
+          const latest = await getLatestAiReport();
+          console.log('[Chat] Polling:', latest?.status);
+          if (latest && latest.html && latest.status === 'completed') {
+            resolved = true;
+            console.log('[Chat] Got result via polling!');
+            setHtmlContent(latest.html);
+            setLoading(false);
+            unsubscribe();
+            clearInterval(pollInterval);
+          }
+        } catch (e) {
+          // Keep trying, don't quit
+          console.log('[Chat] Waiting for result...');
+        }
+      }, 2000);
+
+      // No timeout - wait indefinitely until data arrives
+
+    } catch (err) {
+      setError('Failed to send request to Firebase');
+      console.error(err);
+      setLoading(false);
+    }
+  };
+
+  return (
+    <motion.div
+      key="ai-chat"
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: -20 }}
+      transition={{ duration: 0.3 }}
+      className="h-full flex flex-col space-y-4"
+    >
+      {/* Header */}
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-4">
+          <motion.div
+            animate={{ y: [0, -5, 0] }}
+            transition={{ repeat: Infinity, duration: 2 }}
+          >
+            <img
+              src="/anime_traffic_girl.png"
+              alt="Traffic-chan"
+              className="w-16 h-16 rounded-full border-4 border-white shadow-xl object-cover kawaii-shadow"
+            />
+          </motion.div>
+          <div>
+            <h2 className="text-2xl font-extrabold text-purple-900 flex items-center gap-2">
+              🌸 Chat with Traffic-chan
+            </h2>
+            <p className="text-sm text-purple-400">Ask me anything about traffic, nya~! ✨</p>
+          </div>
+        </div>
+        <button
+          onClick={() => dispatch(setView('dashboard'))}
+          className="px-4 py-2 bg-gradient-to-r from-pink-400 to-purple-400 text-white rounded-xl font-bold text-sm hover:from-pink-500 hover:to-purple-500 transition-all shadow-lg kawaii-btn"
+        >
+          ← Back to Dashboard
+        </button>
+      </div>
+
+      {/* HTML Content Panel */}
+      <div className="flex-1 kawaii-bg-lavender backdrop-blur-sm rounded-3xl p-6 shadow-xl border border-purple-200/50 overflow-y-auto kawaii-shadow relative">
+        {loading && (
+          <div className="absolute inset-0 bg-white/80 backdrop-blur-sm rounded-3xl flex flex-col items-center justify-center z-10">
+            <motion.div
+              animate={{ rotate: 360 }}
+              transition={{ repeat: Infinity, duration: 2, ease: "linear" }}
+              className="text-5xl mb-4"
+            >
+              🌸
+            </motion.div>
+            <p className="text-purple-600 font-bold animate-pulse">Traffic-chan is thinking... ✨</p>
+            <p className="text-purple-400 text-sm mt-2">Generating your kawaii report, nya~!</p>
+          </div>
+        )}
+
+        {error && (
+          <div className="bg-rose-100 border border-rose-300 rounded-2xl p-4 text-rose-600">
+            <p className="font-bold">💔 Oops! Something went wrong:</p>
+            <p className="text-sm mt-1">{error}</p>
+          </div>
+        )}
+
+        {htmlContent ? (
+          <div
+            className="prose prose-pink max-w-none"
+            dangerouslySetInnerHTML={{ __html: htmlContent }}
+          />
+        ) : !loading && (
+          <div className="h-full flex flex-col items-center justify-center text-center">
+            <motion.div
+              animate={{ y: [0, -10, 0] }}
+              transition={{ repeat: Infinity, duration: 2 }}
+              className="text-6xl mb-4"
+            >
+              🐱
+            </motion.div>
+            <h3 className="text-xl font-bold text-purple-800 mb-2">Hi there, senpai! 💕</h3>
+            <p className="text-purple-500 max-w-md">
+              I'm Traffic-chan, your kawaii traffic analyst! Ask me about traffic patterns,
+              congestion analysis, or request a detailed report. I'll generate a beautiful
+              HTML report just for you! ✨
+            </p>
+            <div className="mt-6 flex flex-wrap gap-2 justify-center">
+              {['Analyze today\'s traffic', 'Show congestion summary', 'What are the peak hours?'].map((suggestion) => (
+                <button
+                  key={suggestion}
+                  onClick={() => setQuery(suggestion)}
+                  className="px-3 py-2 bg-white/70 hover:bg-white rounded-xl text-purple-600 text-sm font-medium border border-purple-200 transition-all hover:scale-105"
+                >
+                  {suggestion}
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* Input Area */}
+      <div className="flex gap-3">
+        <input
+          type="text"
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          onKeyDown={(e) => e.key === 'Enter' && handleSendQuery()}
+          placeholder="Ask Traffic-chan anything... 🌸"
+          className="flex-1 px-5 py-4 rounded-2xl border-2 border-pink-200 focus:border-pink-400 focus:ring-2 focus:ring-pink-200 outline-none text-purple-800 placeholder:text-purple-300 kawaii-bg-pink shadow-lg kawaii-shadow font-medium"
+        />
+        <button
+          onClick={handleSendQuery}
+          disabled={loading || !query.trim()}
+          className="px-8 py-4 bg-gradient-to-r from-pink-400 via-purple-400 to-pink-500 text-white rounded-2xl font-bold text-sm hover:from-pink-500 hover:via-purple-500 hover:to-pink-600 transition-all shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed kawaii-shadow flex items-center gap-2"
+        >
+          {loading ? (
+            <>
+              <Loader2 className="w-5 h-5 animate-spin" />
+              Thinking...
+            </>
+          ) : (
+            <>
+              <Sparkles className="w-5 h-5" />
+              Send ✨
+            </>
+          )}
+        </button>
+      </div>
+
+    </motion.div>
+  );
+};
+
 // --- Components ---
 
 const Sidebar = () => {
@@ -235,14 +460,18 @@ const Sidebar = () => {
           </div>
         </div>
 
-        {/* 🐾 Cute Mascot Section */}
-        <div className="mb-4 p-3 bg-white/15 rounded-2xl backdrop-blur-sm border border-white/20">
+        {/* 🐾 Cute Mascot Section - Click to Chat! */}
+        <div
+          className={`mb-4 p-3 rounded-2xl backdrop-blur-sm border cursor-pointer transition-all duration-300 hover:scale-105 group ${currentView === 'chat' ? 'bg-white/30 border-white/40 shadow-lg' : 'bg-white/15 border-white/20 hover:bg-white/25'}`}
+          onClick={() => dispatch(setView('chat'))}
+        >
           <div className="flex items-center gap-2">
-            <span className="text-2xl animate-bounce-cute">🐱</span>
+            <span className="text-2xl animate-bounce-cute group-hover:animate-wiggle">🐱</span>
             <div>
               <p className="text-[10px] font-bold text-white">Traffic-chan says:</p>
-              <p className="text-[9px] text-white/80 italic">"Drive safely, nya~!" 💗</p>
+              <p className="text-[9px] text-white/80 italic">"Click me to chat, nya~!" 💗</p>
             </div>
+            <Sparkles className="w-4 h-4 text-yellow-300 ml-auto opacity-0 group-hover:opacity-100 transition-opacity" />
           </div>
         </div>
 
@@ -1276,6 +1505,10 @@ export const TrafficDashboard = () => {
 
             {currentView === 'admin' && (
               <AdminPanel />
+            )}
+
+            {currentView === 'chat' && (
+              <AIChatView />
             )}
           </AnimatePresence>
         </div>
